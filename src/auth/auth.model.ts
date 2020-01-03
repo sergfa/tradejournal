@@ -1,4 +1,4 @@
-import { User } from 'src/users/user.model';
+import { User } from '../users/user.model';
 
 export class AccessInfo {
   constructor(public token: string, public user: User) {}
