@@ -3,12 +3,15 @@ import {
   Controller,
   Post,
   UnprocessableEntityException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { CommonService } from '../common/common.service';
+import { UniqueEmailValidationPipe } from './unique.email.validation.pipe';
+import { UniqueUserNameValidationPipe } from './unique.username.validation.pipe';
 import { UserEntity } from './user.entity';
 import { UserDTO } from './user.model';
 import { UsersService } from './users.service';
-import { CommonService } from '../common/common.service';
 
 @Controller('users')
 export class UsersController {
@@ -18,6 +21,11 @@ export class UsersController {
   ) {}
 
   @Post()
+  @UsePipes(
+    new ValidationPipe({ transform: true }),
+    UniqueUserNameValidationPipe,
+    UniqueEmailValidationPipe,
+  )
   async createUser(
     @Body()
     userData: UserDTO,

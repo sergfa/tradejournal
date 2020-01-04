@@ -17,7 +17,7 @@ export class AuthService {
     username: string,
     userpassword: string,
   ): Promise<UserEntity> {
-    const userEntity = await this._usersService.findOne(username);
+    const userEntity = await this._usersService.findOneByName(username);
     return userEntity &&
       (await this._commonService.compareHash(userpassword, userEntity.password))
       ? userEntity
