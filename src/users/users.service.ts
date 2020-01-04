@@ -9,9 +9,14 @@ export class UsersService {
     private readonly _userRepository: Repository<UserEntity>,
   ) {}
 
-  async findOne(username: string): Promise<UserEntity | undefined> {
+  async findOneByName(username: string): Promise<UserEntity | undefined> {
     const users = await this._userRepository.findAll();
     return users.entries.find(user => user.username === username);
+  }
+
+  async findOneByEmail(email: string): Promise<UserEntity | undefined> {
+    const users = await this._userRepository.findAll();
+    return users.entries.find(user => user.email === email);
   }
 
   async create(userEntity: UserEntity): Promise<UserEntity> {
