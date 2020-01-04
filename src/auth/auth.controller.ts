@@ -12,10 +12,4 @@ export class AuthController {
   async login(@Request() req): Promise<AccessInfo> {
     return await this._authService.login(req.user);
   }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
 }
