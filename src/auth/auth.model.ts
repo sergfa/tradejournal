@@ -1,7 +1,7 @@
-import { User } from '../users/user.model';
+import { UserEntity } from 'src/users/user.entity';
 
 export class AccessInfo {
-  constructor(public token: string, public user: User) {}
+  constructor(public token: string, public user: UserEntity) {}
 }
 
 export class JWTPayload {

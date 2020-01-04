@@ -10,7 +10,7 @@ export class AuthController {
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req): Promise<AccessInfo> {
-    return this._authService.login(req.user);
+    return await this._authService.login(req.user);
   }
 
   @UseGuards(AuthGuard('jwt'))

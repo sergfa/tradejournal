@@ -6,11 +6,13 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
+import { CommonModule } from '../common/common.module';
 
 @Module({
   providers: [AuthService, LocalStrategy, JwtStrategy],
   imports: [
     UsersModule,
+    CommonModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
