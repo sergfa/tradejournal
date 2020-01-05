@@ -17,7 +17,7 @@ export class UniqueEmailValidationPipe implements PipeTransform<any> {
     }
     const userEntity = await this._userService.findOneByEmail(userData.email);
     if (userEntity) {
-      throw new BadRequestException('Email already exist.');
+      throw new BadRequestException('Email already exist.', '422');
     }
     return userData;
   }

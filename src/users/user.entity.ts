@@ -10,4 +10,5 @@ export class UserEntity {
   @EntityString() username: string;
   @EntityString() password: string;
   @EntityString() email: string;
+  RowKey?: string;
 }

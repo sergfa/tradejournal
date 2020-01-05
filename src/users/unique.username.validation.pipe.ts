@@ -17,7 +17,7 @@ export class UniqueUserNameValidationPipe implements PipeTransform<any> {
     }
     const userEntity = await this._userService.findOneByName(userData.username);
     if (userEntity) {
-      throw new BadRequestException('User name already exist.');
+      throw new BadRequestException('User name already exist.', '422');
     }
     return userData;
   }

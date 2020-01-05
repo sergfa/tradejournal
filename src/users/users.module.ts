@@ -11,7 +11,7 @@ import { UsersService } from './users.service';
   imports: [
     CommonModule,
     AzureTableStorageModule.forFeature(UserEntity, {
-      table: 'UserEntity',
+      table: process.env.USER_TABLE,
       createTableIfNotExists: true,
     }),
   ],

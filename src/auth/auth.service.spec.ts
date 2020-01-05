@@ -23,7 +23,7 @@ describe('AuthService', () => {
           signOptions: { expiresIn: process.env.JWT_EXPIRE },
         }),
         AzureTableStorageModule.forFeature(UserEntity, {
-          table: 'UserEntity',
+          table: process.env.USER_TABLE,
           createTableIfNotExists: true,
         }),
       ],

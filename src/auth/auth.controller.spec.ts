@@ -26,7 +26,7 @@ describe('Auth Controller', () => {
         PassportModule,
         CommonModule,
         AzureTableStorageModule.forFeature(UserEntity, {
-          table: 'UserEntity',
+          table: process.env.USER_TABLE,
           createTableIfNotExists: true,
         }),
         JwtModule.register({
