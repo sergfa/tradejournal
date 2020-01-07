@@ -1,13 +1,19 @@
 import {
+  AzureTableStorageResponse,
   InjectRepository,
   Repository,
-  AzureTableStorageResponse,
 } from '@nestjs/azure-database';
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { UserEntity } from './user.entity';
 
 @Injectable()
 export class UsersService {
+  _logger = new Logger('UsersService');
+
   constructor(
     @InjectRepository(UserEntity)
     private readonly _userRepository: Repository<UserEntity>,
@@ -15,8 +21,12 @@ export class UsersService {
 
   async findOneByName(username: string): Promise<UserEntity | undefined> {
     try {
-      const users = await this._userRepository.findAll();
-      return users.entries.find(user => user.username === username);
+      const users = await this._userRepository
+        .where('username eq ?', username)
+        .findAll();
+      return users.entries && users.entries.length > 0
+        ? users.entries[0]
+        : undefined;
     } catch (error) {
       throw new UnprocessableEntityException(error);
     }
@@ -24,8 +34,12 @@ export class UsersService {
 
   async findOneByEmail(email: string): Promise<UserEntity | undefined> {
     try {
-      const users = await this._userRepository.findAll();
-      return users.entries.find(user => user.email === email);
+      const users = await this._userRepository
+        .where('email eq ?', email)
+        .findAll();
+      return users.entries && users.entries.length > 0
+        ? users.entries[0]
+        : undefined;
     } catch (error) {
       throw new UnprocessableEntityException(error);
     }
