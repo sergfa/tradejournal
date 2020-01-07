@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from 'src/users/user.entity';
 import { CommonService } from '../common/common.service';
@@ -7,6 +7,8 @@ import { AccessInfo, JWTPayload } from './auth.model';
 
 @Injectable()
 export class AuthService {
+  private readonly _logger = new Logger('AuthService');
+
   constructor(
     private readonly _usersService: UsersService,
     private readonly _jwtService: JwtService,
@@ -18,6 +20,7 @@ export class AuthService {
     userpassword: string,
   ): Promise<UserEntity> {
     const userEntity = await this._usersService.findOneByName(username);
+    this._logger.debug('Found user entity', JSON.stringify(userEntity));
     return userEntity &&
       (await this._commonService.compareHash(userpassword, userEntity.password))
       ? userEntity
