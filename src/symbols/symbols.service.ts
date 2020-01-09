@@ -20,16 +20,52 @@ export class SymbolsService {
       throw new UnprocessableEntityException(error);
     }
   }
-  async findByExchange(exchange: string) {
+  async findByExchange(exchange: string): Promise<SymbolEntity[]> {
     try {
-      const query: AzureTableStorageQuery = this._symbolRepository.where(
-        'exchange eq ?',
-        exchange,
-      );
-      const result = await this._symbolRepository.findAll(query);
-      return result.entries;
+      const result = await this._symbolRepository
+        .where('exchange eq ?', exchange)
+        .findAll();
+      return result.entries || [];
     } catch (error) {
       throw new UnprocessableEntityException(error);
+    }
+  }
+
+  async findByCode(code: string): Promise<SymbolEntity | undefined> {
+    try {
+      code = code || '';
+      const result = await this._symbolRepository
+        .where('code eq', code.toUpperCase())
+        .top(1)
+        .findAll();
+      return result.entries && result.entries.length > 0
+        ? result.entries[0]
+        : undefined;
+    } catch (error) {
+      throw new UnprocessableEntityException(error);
+    }
+  }
+
+  async search(query: string): Promise<SymbolEntity[]> {
+    if (query) {
+      query = query.toUpperCase();
+      try {
+        const upperLimitQuery =
+          String.fromCharCode(query.charCodeAt(0) + 1) + query.slice(1);
+        const result = await this._symbolRepository
+          .where('code ge ? and lt ?', query, upperLimitQuery)
+          .top(50)
+          .findAll();
+        return result.entries ? result.entries : [];
+      } catch (error) {
+        throw new UnprocessableEntityException(error);
+      }
+    } else {
+      try {
+        return (await this._symbolRepository.top(50).findAll()).entries;
+      } catch (error) {
+        throw new UnprocessableEntityException(error);
+      }
     }
   }
 }
