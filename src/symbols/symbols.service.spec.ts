@@ -25,4 +25,16 @@ describe('SymbolsService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('should create symbol', async () => {
+    const symbolEntity = new SymbolEntity();
+    Object.assign(symbolEntity, {
+      exchange: 'NASDAQ',
+      code: 'AAPL',
+      name: 'Apple Inc.',
+    });
+    const createdSymbol = await service.create(symbolEntity);
+    expect(createdSymbol).toBeDefined();
+    expect(createdSymbol.RowKey).toBeDefined();
+  });
 });
