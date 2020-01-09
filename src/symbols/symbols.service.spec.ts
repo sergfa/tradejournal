@@ -2,8 +2,8 @@
 require('dotenv').config();
 import { AzureTableStorageModule } from '@nestjs/azure-database';
 import { Test, TestingModule } from '@nestjs/testing';
-import { SymbolsService } from './symbols.service';
 import { SymbolEntity } from './symbol.entity';
+import { SymbolsService } from './symbols.service';
 
 describe('SymbolsService', () => {
   let service: SymbolsService;
@@ -22,6 +22,15 @@ describe('SymbolsService', () => {
     service = module.get<SymbolsService>(SymbolsService);
   });
 
+  beforeEach(async () => {
+    try {
+      const symbol = await service.find('NASDAQ:MY_TEST');
+      if (symbol) {
+        await service.delete(symbol.RowKey);
+      }
+    } catch (error) {}
+  });
+
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
@@ -30,8 +39,8 @@ describe('SymbolsService', () => {
     const symbolEntity = new SymbolEntity();
     Object.assign(symbolEntity, {
       exchange: 'NASDAQ',
-      code: 'AAPL',
-      name: 'Apple Inc.',
+      code: 'MY_TEST',
+      name: 'MY TEST COMPANY',
     });
     const createdSymbol = await service.create(symbolEntity);
     expect(createdSymbol).toBeDefined();

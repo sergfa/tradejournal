@@ -1,7 +1,7 @@
 import {
+  AzureTableStorageResponse,
   InjectRepository,
   Repository,
-  AzureTableStorageQuery,
 } from '@nestjs/azure-database';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { SymbolEntity } from './symbol.entity';
@@ -15,11 +15,37 @@ export class SymbolsService {
 
   async create(symbol: SymbolEntity): Promise<SymbolEntity> {
     try {
-      return await this._symbolRepository.create(symbol);
+      const rowKey = `${symbol.exchange}:${symbol.code}`;
+      return await this._symbolRepository.create(symbol, rowKey);
     } catch (error) {
       throw new UnprocessableEntityException(error);
     }
   }
+
+  async delete(rowKey: string): Promise<boolean> {
+    try {
+      const response: AzureTableStorageResponse = await this._symbolRepository.delete(
+        rowKey,
+        new SymbolEntity(),
+      );
+      if (response.statusCode === 204) {
+        return true;
+      } else {
+        throw new UnprocessableEntityException(response.error);
+      }
+    } catch (error) {
+      throw new UnprocessableEntityException(error);
+    }
+  }
+
+  async find(rowKey: string): Promise<SymbolEntity | undefined> {
+    try {
+      return await this._symbolRepository.find(rowKey, new SymbolEntity());
+    } catch (error) {
+      throw new UnprocessableEntityException(error);
+    }
+  }
+
   async findByExchange(exchange: string): Promise<SymbolEntity[]> {
     try {
       const result = await this._symbolRepository
